@@ -1,0 +1,21 @@
+# ===== Global =====
+.DS_Store
+Thumbs.db
+
+# ===== Node / React Native =====
+node_modules/
+npm-debug.log*
+yarn-error.log*
+.expo/
+.expo-shared/
+web-build/
+
+# ===== Python / Flask =====
+__pycache__/
+*.pyc
+venv/
+.env
+
+# ===== IDE =====
+.vscode/
+.idea/
