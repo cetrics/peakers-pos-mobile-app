@@ -14,6 +14,7 @@ import {
 import axios from "axios";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialCommunityIcons as Icon } from "@expo/vector-icons";
+import { useFocusEffect } from "@react-navigation/native";
 
 const API = "http://192.168.1.66:5000";
 
@@ -93,10 +94,12 @@ const SalesMobile = () => {
   });
 
   /* ---------------- Fetch Data ---------------- */
-  useEffect(() => {
-    fetchProducts();
-    fetchCompanyDetails();
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchProducts();
+      fetchCompanyDetails();
+    }, []),
+  );
 
   const fetchProducts = () => {
     axios
@@ -106,6 +109,11 @@ const SalesMobile = () => {
         setFilteredProducts(res.data.products);
       })
       .catch(() => Alert.alert("Error", "Failed to load products"));
+  };
+
+  const refreshProducts = () => {
+    fetchProducts();
+    fetchCustomers();
   };
 
   const fetchCustomers = () => {
@@ -288,10 +296,17 @@ const SalesMobile = () => {
       const orderNumber = response.data.order_number;
 
       Alert.alert("Success", "Sale processed successfully!");
+
+      // Clear cart & reset states
       setCart([]);
       setSelectedCustomer(null);
       setVatRate(0.16);
       setDiscount(0);
+
+      // REFRESH products from server
+      fetchProducts();
+
+      // Print receipt
       printReceipt(payload, totalAmount, vat, discount, orderNumber);
     } catch (error: any) {
       const errorData = error.response?.data;
@@ -364,7 +379,7 @@ const SalesMobile = () => {
       <View style={styles.header}>
         <Text style={styles.title}>Sales</Text>
         <TouchableOpacity onPress={() => setCartOpen(true)}>
-          <Icon name="cart" size={26} color="#F5A100" />
+          <Icon name="cart" size={26} color="#0B1446" />
           {cart.length > 0 && (
             <View style={styles.badge}>
               <Text style={styles.badgeText}>

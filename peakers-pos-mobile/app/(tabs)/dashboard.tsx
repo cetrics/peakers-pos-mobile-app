@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
   TouchableOpacity,
   Dimensions,
+  Alert,
 } from "react-native";
 import { LineChart } from "react-native-chart-kit";
 import { MaterialCommunityIcons as Icon } from "@expo/vector-icons";
@@ -141,6 +142,22 @@ const DashboardMobile = () => {
     setRefreshing(false);
   };
 
+  const handleLogout = () => {
+    Alert.alert("Logout", "Are you sure you want to logout?", [
+      {
+        text: "Cancel",
+        style: "cancel",
+      },
+      {
+        text: "Logout",
+        style: "destructive",
+        onPress: () => {
+          router.replace("/(auth)/login"); // Navigate back to login screen
+        },
+      },
+    ]);
+  };
+
   useEffect(() => {
     fetchDashboardData();
   }, []);
@@ -167,10 +184,24 @@ const DashboardMobile = () => {
         }
       >
         <View style={styles.header}>
-          <Text style={styles.title}>Dashboard Overview</Text>
-          <TouchableOpacity onPress={fetchDashboardData}>
-            <Icon name="refresh" size={24} color="#0B1446" />
-          </TouchableOpacity>
+          <View style={styles.headerLeft}>
+            <Text style={styles.title}>Dashboard</Text>
+          </View>
+          <View style={styles.headerRight}>
+            <TouchableOpacity
+              onPress={handleLogout}
+              style={styles.logoutButton}
+            >
+              <Icon name="logout" size={22} color="#F44336" />
+              <Text style={styles.logoutText}>Logout</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={fetchDashboardData}
+              style={styles.refreshButton}
+            >
+              <Icon name="refresh" size={24} color="#0B1446" />
+            </TouchableOpacity>
+          </View>
         </View>
 
         {/* Stats */}
@@ -264,12 +295,7 @@ const getStatusColor = (status?: string) => {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#f9f9f9" },
   centered: { flex: 1, justifyContent: "center", alignItems: "center" },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    padding: 16,
-    backgroundColor: "#fff",
-  },
+
   title: { fontSize: 20, fontWeight: "bold", color: "#0B1446" },
   statsContainer: { padding: 16 },
   statRow: { flexDirection: "row", marginBottom: 12 },
@@ -310,6 +336,41 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingTop: 8, // 👈 pushes dashboard down slightly
     paddingBottom: 16,
+  },
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 16,
+    backgroundColor: "#fff",
+    borderBottomWidth: 1,
+    borderBottomColor: "#eee",
+  },
+  headerLeft: {
+    flex: 1,
+  },
+  headerRight: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+  },
+  logoutButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: "#F44336",
+  },
+  logoutText: {
+    marginLeft: 4,
+    color: "#F44336",
+    fontSize: 14,
+    fontWeight: "500",
+  },
+  refreshButton: {
+    padding: 4,
   },
 });
 
